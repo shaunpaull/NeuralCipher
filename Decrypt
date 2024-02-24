@@ -1,0 +1,63 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <fluidlatticeai.h> // Assuming you have a header file for FluidLatticeAI
+
+using namespace std;
+
+class CistercianCipher {
+public:
+  CistercianCipher() {
+    // Initialize FluidLatticeAI
+    fluidLatticeAI = new FluidLatticeAI::Lattice(10, 10, 10, 10, 26, 26);
+  }
+
+  void train(vector<string> encryptedText, vector<string> decryptedText) {
+    // Train the FluidLatticeAI using the encrypted and decrypted text
+    fluidLatticeAI->train(encryptedText, decryptedText);
+  }
+
+  string decrypt(string text) {
+    // Convert the text to a vector of integers.
+    vector<int> textVector;
+    for (char c : text) {
+      textVector.push_back(c - 'a');
+    }
+
+    // Decrypt the text using the FluidLatticeAI.
+    vector<int> decryptedTextVector = fluidLatticeAI->propagate(textVector);
+
+    // Convert the decrypted text vector back to a string.
+    string decryptedText = "";
+    for (int i : decryptedTextVector) {
+      decryptedText += (char)('a' + i);
+    }
+
+    return decryptedText;
+  }
+
+private:
+  FluidLatticeAI::Lattice* fluidLatticeAI;
+};
+
+int main() {
+  // Create a CistercianCipher object.
+  CistercianCipher cipher;
+
+  // Load the training data.
+  vector<string> encryptedText;
+  vector<string> decryptedText;
+  loadData("data.txt", encryptedText, decryptedText); // Assuming you have a function to load data
+
+  // Train the CistercianCipher object.
+  cipher.train(encryptedText, decryptedText);
+
+  // Decrypt the encrypted text.
+  string encryptedText = "some encrypted text";
+  string decryptedText = cipher.decrypt(encryptedText);
+
+  // Print the decrypted text.
+  cout << "Decrypted text: " << decryptedText << endl;
+
+  return 0;
+}
